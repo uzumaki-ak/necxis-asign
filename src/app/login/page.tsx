@@ -43,8 +43,8 @@ export default function LoginPage() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/dashboard");
-    } catch (err) {
-      setError("Invalid email or password");
+    } catch (_) {
+      setError("Something went wrong. Please try again.");
       setLoading({ ...loading, email: false });
     }
   };
@@ -55,9 +55,9 @@ export default function LoginPage() {
     try {
       await signInWithPopup(auth, googleProvider);
       router.push("/dashboard");
-    } catch (err) {
-      setError("Google login failed");
-      setLoading({ ...loading, google: false });
+    } catch (_) {
+      setError("Something went wrong. Please try again.");
+      setLoading({ ...loading, email: false });
     }
   };
 

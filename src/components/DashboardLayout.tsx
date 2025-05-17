@@ -31,7 +31,7 @@ const drawerWidth = 240;
 
 import { styled, Theme } from "@mui/material/styles";
 
-const RetroListItem = styled(ListItemButton)(({ theme }: { theme: Theme }) => ({
+const RetroListItem = styled(ListItemButton)(({}: { theme: Theme }) => ({
   borderBottom: "1px solid #000000",
   "&:hover": {
     backgroundColor: "#000000",
