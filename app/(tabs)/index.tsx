@@ -1,75 +1,172 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import * as WebBrowser from "expo-web-browser";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  BackHandler,
+  Platform,
+  SafeAreaView,
+  Text,
+  View,
+} from "react-native";
+import { WebView } from "react-native-webview";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+// Enable WebBrowser redirect handling for auth
+WebBrowser.maybeCompleteAuthSession();
 
-export default function HomeScreen() {
+const HOSTED_URL = "https://necxis-asign-g95e.vercel.app";
+
+export default function App() {
+  const webviewRef = useRef<WebView>(null);
+  const [loading, setLoading] = useState(true);
+  const [authenticated, setAuthenticated] = useState(false);
+
+  // Handle back button on Android
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      const backAction = () => {
+        if (webviewRef.current) {
+          webviewRef.current.goBack();
+          return true; // Prevent default behavior
+        }
+        return false;
+      };
+
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
+
+      return () => backHandler.remove();
+    }
+  }, []);
+
+  // Handle navigation state changes
+  const handleNavigationStateChange = (newNavState: any) => {
+    const { url, loading } = newNavState;
+
+    if (!url) return;
+
+    setLoading(loading);
+
+    // If we navigate to dashboard, consider it authenticated
+    if (url.includes("/dashboard")) {
+      setAuthenticated(true);
+    }
+
+    console.log("NavigationState:", url);
+
+    // Handle auth redirects
+    if (
+      url.includes("firebaseapp.com/auth/handler") ||
+      url.includes("accounts.google.com")
+    ) {
+      // For Firebase auth redirects, we need to handle this
+      webviewRef.current?.injectJavaScript(`
+        if (typeof window !== 'undefined') {
+          // Keep track of this URL for recovery
+          localStorage.setItem('auth_redirect_url', window.location.href);
+          
+          // Redirect back to our app's callback page
+          window.location.href = '${HOSTED_URL}/auth-callback';
+        }
+        true;
+      `);
+    }
+  };
+
+  // Handle messages from WebView
+  const onMessage = (event: any) => {
+    const message = event.nativeEvent.data;
+    console.log("Message from WebView:", message);
+
+    if (message === "auth-success") {
+      setAuthenticated(true);
+      Alert.alert("Login Successful!");
+
+      // Ensure we navigate to dashboard
+      webviewRef.current?.injectJavaScript(`
+        if (window.location.pathname !== '/dashboard') {
+          window.location.href = '${HOSTED_URL}/dashboard';
+        }
+        true;
+      `);
+    }
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <SafeAreaView style={{ flex: 1 }}>
+      {loading && !authenticated && (
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "white",
+            zIndex: 10,
+          }}
+        >
+          <ActivityIndicator size="large" color="#000000" />
+          <Text style={{ marginTop: 10, fontSize: 16 }}>Loading...</Text>
+        </View>
+      )}
+
+      <WebView
+        ref={webviewRef}
+        source={{ uri: HOSTED_URL }}
+        style={{ flex: 1 }}
+        onNavigationStateChange={handleNavigationStateChange}
+        onMessage={onMessage}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+        sharedCookiesEnabled={true}
+        thirdPartyCookiesEnabled={true}
+        originWhitelist={["*"]}
+        allowsInlineMediaPlayback
+        allowsBackForwardNavigationGestures
+        startInLoadingState
+        incognito={false} // We need to keep cookies
+        cacheEnabled={true}
+        injectedJavaScript={`
+          // Setup WebView communication
+          (function() {
+            // Detect if we're on dashboard
+            function checkAuth() {
+              if (window.location.pathname === '/dashboard') {
+                if (window.ReactNativeWebView) {
+                  window.ReactNativeWebView.postMessage('auth-success');
+                }
+              }
+            }
+            
+            // Run immediately
+            checkAuth();
+            
+            // Handle Firebase auth redirects
+            if (window.location.href.includes('firebaseapp.com/auth/handler')) {
+              // Save info to localStorage
+              localStorage.setItem('firebase_auth_redirect', window.location.href);
+              
+              // Navigate back to our app
+              window.location.href = '${HOSTED_URL}/auth-callback';
+            }
+          })();
+          true;
+        `}
+        onHttpError={(syntheticEvent) => {
+          const { nativeEvent } = syntheticEvent;
+          console.warn("WebView HTTP error:", nativeEvent);
+        }}
+        onError={(syntheticEvent) => {
+          const { nativeEvent } = syntheticEvent;
+          console.warn("WebView error:", nativeEvent);
+          Alert.alert("Error", "Failed to load the app");
+        }}
+      />
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
