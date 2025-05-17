@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import { FaArrowRight } from "react-icons/fa"; // Example icon from react-icons
+import { FaArrowRight } from "react-icons/fa";
 
 const Home = () => {
   return (
@@ -9,7 +9,7 @@ const Home = () => {
         <h1 className="text-5xl hover:text-blue-500 hover:underline cursor-pointer">
           Go to the dashboard
         </h1>
-      <FaArrowRight className="mt-4 text-3xl text-gray-600 hover:text-blue-500" />
+        <FaArrowRight className="mt-4 text-3xl text-gray-600 hover:text-blue-500" />
       </Link>
     </div>
   );

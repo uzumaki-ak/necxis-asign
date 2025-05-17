@@ -9,7 +9,6 @@ import {
   styled,
   Paper,
   Card,
-  CardContent,
 } from "@mui/material";
 import {
   AttachMoney,
@@ -25,12 +24,11 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 
-// Retro black and white theme components
 const StatCard = styled(Card)(({ theme }) => ({
   backgroundColor: "#ffffff",
   padding: theme.spacing(3),
   textAlign: "center",
-  borderRadius: "8px", // Slightly less rounded for retro feel
+  borderRadius: "8px",
   height: "100%",
   display: "flex",
   flexDirection: "column",
@@ -150,19 +148,22 @@ export default function DashboardPage() {
                   <AttachMoney />
                 </Avatar>
               </Box>
-              <Typography variant="h5" sx={{ fontWeight: 800, mb: 1, color: "#000000" }}>
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: 800, mb: 1, color: "#000000" }}
+              >
                 $24,780
               </Typography>
               <LinearProgress
                 variant="determinate"
                 value={75}
-                sx={{ 
-                  height: 8, 
+                sx={{
+                  height: 8,
                   borderRadius: 4,
                   backgroundColor: "#ffffff",
                   "& .MuiLinearProgress-bar": {
                     backgroundColor: "#000000",
-                  }
+                  },
                 }}
               />
             </StatCard>
@@ -191,19 +192,22 @@ export default function DashboardPage() {
                   <People />
                 </Avatar>
               </Box>
-              <Typography variant="h5" sx={{ fontWeight: 800, mb: 1, color: "#000000" }}>
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: 800, mb: 1, color: "#000000" }}
+              >
                 1,245
               </Typography>
               <LinearProgress
                 variant="determinate"
                 value={50}
-                sx={{ 
-                  height: 8, 
+                sx={{
+                  height: 8,
                   borderRadius: 4,
                   backgroundColor: "#ffffff",
                   "& .MuiLinearProgress-bar": {
                     backgroundColor: "#000000",
-                  }
+                  },
                 }}
               />
             </StatCard>
@@ -232,19 +236,22 @@ export default function DashboardPage() {
                   <ShoppingCart />
                 </Avatar>
               </Box>
-              <Typography variant="h5" sx={{ fontWeight: 800, mb: 1, color: "#000000" }}>
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: 800, mb: 1, color: "#000000" }}
+              >
                 356
               </Typography>
               <LinearProgress
                 variant="determinate"
                 value={30}
-                sx={{ 
-                  height: 8, 
+                sx={{
+                  height: 8,
                   borderRadius: 4,
                   backgroundColor: "#ffffff",
                   "& .MuiLinearProgress-bar": {
                     backgroundColor: "#000000",
-                  }
+                  },
                 }}
               />
             </StatCard>
@@ -273,19 +280,22 @@ export default function DashboardPage() {
                   <TrendingUp />
                 </Avatar>
               </Box>
-              <Typography variant="h5" sx={{ fontWeight: 800, mb: 1, color: "#000000" }}>
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: 800, mb: 1, color: "#000000" }}
+              >
                 +12.5%
               </Typography>
               <LinearProgress
                 variant="determinate"
                 value={12.5}
-                sx={{ 
-                  height: 8, 
+                sx={{
+                  height: 8,
                   borderRadius: 4,
                   backgroundColor: "#ffffff",
                   "& .MuiLinearProgress-bar": {
                     backgroundColor: "#000000",
-                  }
+                  },
                 }}
               />
             </StatCard>
@@ -301,7 +311,10 @@ export default function DashboardPage() {
             }}
           >
             <DashboardItem sx={{ flex: 2 }}>
-              <Typography variant="h6" sx={{ fontWeight: 800, mb: 2, color: "#000000" }}>
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: 800, mb: 2, color: "#000000" }}
+              >
                 SALES OVERVIEW
               </Typography>
               <Box
@@ -321,7 +334,10 @@ export default function DashboardPage() {
             </DashboardItem>
 
             <DashboardItem sx={{ flex: 1 }}>
-              <Typography variant="h6" sx={{ fontWeight: 800, mb: 2, color: "#000000" }}>
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: 800, mb: 2, color: "#000000" }}
+              >
                 REVENUE SOURCES
               </Typography>
               <Box
@@ -358,7 +374,10 @@ export default function DashboardPage() {
                   mb: 2,
                 }}
               >
-                <Typography variant="h6" sx={{ fontWeight: 800, color: "#000000" }}>
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: 800, color: "#000000" }}
+                >
                   RECENT ACTIVITIES
                 </Typography>
                 <Typography variant="caption" style={{ color: "#000000" }}>
@@ -381,7 +400,10 @@ export default function DashboardPage() {
             </DashboardItem>
 
             <DashboardItem sx={{ flex: 1 }}>
-              <Typography variant="h6" sx={{ fontWeight: 800, mb: 2, color: "#000000" }}>
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: 800, mb: 2, color: "#000000" }}
+              >
                 QUICK ACTIONS
               </Typography>
               <Box
@@ -392,16 +414,24 @@ export default function DashboardPage() {
                 }}
               >
                 <QuickActionItem>
-                  <Typography variant="body2" style={{ fontWeight: 600 }}>GENERATE REPORT</Typography>
+                  <Typography variant="body2" style={{ fontWeight: 600 }}>
+                    GENERATE REPORT
+                  </Typography>
                 </QuickActionItem>
                 <QuickActionItem>
-                  <Typography variant="body2" style={{ fontWeight: 600 }}>ADD NEW PRODUCT</Typography>
+                  <Typography variant="body2" style={{ fontWeight: 600 }}>
+                    ADD NEW PRODUCT
+                  </Typography>
                 </QuickActionItem>
                 <QuickActionItem>
-                  <Typography variant="body2" style={{ fontWeight: 600 }}>SEND NEWSLETTER</Typography>
+                  <Typography variant="body2" style={{ fontWeight: 600 }}>
+                    SEND NEWSLETTER
+                  </Typography>
                 </QuickActionItem>
                 <QuickActionItem>
-                  <Typography variant="body2" style={{ fontWeight: 600 }}>VIEW ANALYTICS</Typography>
+                  <Typography variant="body2" style={{ fontWeight: 600 }}>
+                    VIEW ANALYTICS
+                  </Typography>
                 </QuickActionItem>
               </Box>
             </DashboardItem>

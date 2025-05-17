@@ -1,4 +1,3 @@
-// components/DashboardLayout.tsx
 "use client";
 
 import { useState } from "react";
@@ -21,15 +20,7 @@ import {
   Divider,
   Badge,
 } from "@mui/material";
-import {
-  Menu,
-  Dashboard,
-  Analytics,
-  Settings,
-  Notifications,
-  AccountCircle,
-  Logout,
-} from "@mui/icons-material";
+import { Menu, Dashboard, Notifications, Logout } from "@mui/icons-material";
 import { useAuth } from "@/context/AuthContext";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
